@@ -20,7 +20,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # FastAPI Backend
+  # rust backend
   backend:
     build: 
       context: ./backend
@@ -31,36 +31,16 @@ services:
       - "5000:5000"
     environment:
       DATABASE_URL: ${DATABASE_URL}
-      PYTHONUNBUFFERED: 1
       ENVIRONMENT: ${ENVIRONMENT}
       DEBUG: ${DEBUG}
     depends_on:
       database:
         condition: service_healthy
-    volumes:
-      - ./backend:/app
+    # volumes:
+    #   - ./backend:/app
     networks:
       - kdb-network
-    command: uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
-
-  # React Frontend (we'll uncomment this later)
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   container_name: kdb_frontend
-  #   restart: unless-stopped
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - backend
-  #   volumes:
-  #     - ./frontend:/app
-  #     - /app/node_modules
-  #   networks:
-  #     - kdb-network
-  #   environment:
-  #     - REACT_APP_API_URL=http://backend:5000
+    # command: ./kdb-backend
 
 networks:
   kdb-network:
