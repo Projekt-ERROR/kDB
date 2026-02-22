@@ -1,0 +1,62 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO ingredients (name, category, default_unit, shelf_life_days, storage)\n        VALUES ($1, $2, $3, $4, $5)\n        RETURNING *",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "category",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "default_unit",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "shelf_life_days",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "storage",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Int4",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      false
+    ]
+  },
+  "hash": "ad27fc9fb8ed93a5d5d310ba3509ae6abcbd4f720938cd73096ed94a1b21352c"
+}
