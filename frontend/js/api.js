@@ -4,7 +4,9 @@
 //  your Tailscale IP once deployed.
 // ─────────────────────────────────────────────
 
-const BASE_URL = window.KDB_API_URL || 'http://localhost:5000';
+// In production, API calls are relative (proxied via nginx at /kdb/api/).
+// For local dev, set backend URL in the settings panel to http://localhost:5000
+const BASE_URL = window.KDB_API_URL || '';
 
 async function request(method, path, body = null) {
   const opts = {

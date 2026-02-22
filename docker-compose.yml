@@ -1,62 +1,30 @@
 services:
-  # postgresql database
-  database:
-    image: postgres:15-alpine
-    container_name: kdb_database
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - ./data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    networks:
-      - kdb-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # rust backend
-  backend:
-    build: 
+  kdb-backend:
+    build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: kdb_backend
     restart: unless-stopped
-    ports:
-      - "5000:5000"
     environment:
-      DATABASE_URL: ${DATABASE_URL}
-      ENVIRONMENT: ${ENVIRONMENT}
-      DEBUG: ${DEBUG}
-    depends_on:
-      database:
-        condition: service_healthy
-    # volumes:
-    #   - ./backend:/app
+      DATABASE_URL: postgres://kdb:${KDB_DB_PASSWORD}@1mdb-postgres:5432/kdb
+      ENVIRONMENT: ${ENVIRONMENT:-production}
     networks:
-      - kdb-network
-    # command: ./kdb-backend
+      - 1mdb-internal
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:5000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
 
-  # frontend (nginx)
-  frontend:
+  kdb-frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: kdb_frontend
     restart: unless-stopped
-    ports:
-      - "8080:80"
     networks:
-      - kdb-network
+      - 1mdb-internal
 
 networks:
-  kdb-network:
-    driver: bridge
-
-volumes:
-  postgres_data:
+  1mdb-internal:
+    external: true
