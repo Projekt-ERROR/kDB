@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0f0e0c">
+  <title>kDB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- Loading bar -->
+  <div id="loading-bar"></div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- ── Confirm modal ── -->
+  <div id="confirm-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-message" id="confirm-message"></div>
+      <div class="modal-actions">
+        <button id="confirm-cancel" class="btn-secondary">cancel</button>
+        <button id="confirm-ok" class="btn-danger">confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Edit ingredient modal ── -->
+  <div id="edit-ingredient-modal-overlay" class="modal-backdrop">
+    <div class="modal-box modal-box-wide" id="edit-ingredient-modal">
+      <div class="modal-header">
+        <span class="modal-title">// edit ingredient</span>
+        <span id="close-edit-ingredient" class="modal-close">&#x2715;</span>
+      </div>
+      <form id="edit-ingredient-form">
+        <input type="hidden" id="edit-ing-id">
+        <div class="form-row">
+          <div class="form-field" style="flex:2">
+            <label class="form-label">name *</label>
+            <input id="edit-ing-name" class="form-input" type="text" required>
+          </div>
+          <div class="form-field">
+            <label class="form-label">default unit</label>
+            <input id="edit-ing-unit" class="form-input" type="text" placeholder="kg">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">category</label>
+            <input id="edit-ing-category" class="form-input" type="text" placeholder="meat">
+          </div>
+          <div class="form-field">
+            <label class="form-label">shelf life (days)</label>
+            <input id="edit-ing-shelf" class="form-input" type="number" min="1">
+          </div>
+        </div>
+        <div class="form-field" style="margin-bottom:0">
+          <label class="form-label">storage</label>
+          <input id="edit-ing-storage" class="form-input" type="text" placeholder="fridge, freezer, pantry...">
+        </div>
+        <div class="panel-actions" style="margin-top:14px">
+          <button type="button" class="btn-secondary" id="close-edit-ingredient-btn"
+            onclick="document.getElementById('edit-ingredient-modal').classList.remove('open'); document.getElementById('edit-ingredient-modal-overlay').classList.remove('open')">cancel</button>
+          <button type="submit" class="btn-primary">save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Header ── -->
+  <header class="header">
+    <div class="header-logo">
+      kDB<span class="logo-cursor"></span>
+    </div>
+    <div class="header-right">
+      <span id="badge-expiring" class="header-badge">loading...</span>
+      <span id="badge-count" class="header-badge">—</span>
+      <div id="settings-btn" class="settings-btn" onclick="App.toggleSettings()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Settings overlay + panel ── -->
+  <div id="settings-overlay" class="settings-overlay" onclick="App.toggleSettings()"></div>
+  <div id="settings-panel" class="settings-panel">
+    <div class="settings-header">
+      <span class="settings-title">// settings</span>
+      <div class="settings-close" onclick="App.toggleSettings()">&#x2715;</div>
+    </div>
+    <div class="settings-body">
+
+      <div class="settings-section-label">api</div>
+      <div style="padding: 8px 0 14px">
+        <div class="form-label">backend url</div>
+        <div class="settings-api-row">
+          <input id="api-url-input" class="settings-api-input" type="text" placeholder="http://100.x.x.x:5000" value="">
+          <button class="settings-api-btn" onclick="saveApiUrl()">save</button>
+        </div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">
+          change to your tailscale IP when deployed
+        </div>
+      </div>
+
+      <div class="settings-section-label">notifications</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">expiry alerts</div>
+          <div class="settings-row-sub">warn before items expire</div>
+        </div>
+        <div class="s-toggle on"></div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">alert threshold</div>
+          <div class="settings-row-sub">days before expiry</div>
+        </div>
+        <select class="form-input" style="width:70px;padding:6px 8px">
+          <option>1</option>
+          <option selected>3</option>
+          <option>5</option>
+          <option>7</option>
+        </select>
+      </div>
+
+      <div class="settings-section-label">display</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">highlight opened</div>
+        </div>
+        <div class="s-toggle on"></div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">auto-calculate expiry</div>
+          <div class="settings-row-sub">use shelf life from catalogue</div>
+        </div>
+        <div class="s-toggle on"></div>
+      </div>
+
+      <div class="settings-section-label">danger zone</div>
+      <div class="settings-row">
+        <div class="settings-row-label">clear kitchen inventory</div>
+        <button id="clear-kitchen-btn" class="qty-btn remove"
+          style="font-size:11px;padding:0 10px;height:28px">clear</button>
+      </div>
+
+    </div>
+    <div class="settings-version">kDB v0.1.0 · rust/axum · postgres</div>
+  </div>
+
+  <!-- ── Main content ── -->
+  <main class="main">
+
+    <!-- ═══ KITCHEN TAB ═══ -->
+    <div id="tab-kitchen" class="tab-content active">
+
+      <div id="expiry-banner" class="expiry-banner" style="display:none">
+        <span>!</span>
+        <span id="expiry-banner-text" class="expiry-banner-text"></span>
+      </div>
+
+      <div class="section-header">
+        <span class="section-title">// inventory</span>
+        <span id="section-count" class="section-count">—</span>
+      </div>
+
+      <div class="search-wrap">
+        <div class="search-wrap-inner">
+          <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input id="kitchen-search" class="search-bar" type="text" placeholder="search kitchen...">
+        </div>
+      </div>
+
+      <div class="filter-scroll">
+        <div class="filter-pill active" data-cat="all" onclick="App.setFilter('all')">all</div>
+        <div class="filter-pill" data-cat="meat" onclick="App.setFilter('meat')">meat</div>
+        <div class="filter-pill" data-cat="produce" onclick="App.setFilter('produce')">produce</div>
+        <div class="filter-pill" data-cat="dairy" onclick="App.setFilter('dairy')">dairy</div>
+        <div class="filter-pill" data-cat="dry" onclick="App.setFilter('dry')">dry goods</div>
+        <div class="filter-pill" data-cat="frozen" onclick="App.setFilter('frozen')">frozen</div>
+        <div class="filter-pill" data-cat="spice" onclick="App.setFilter('spice')">spices</div>
+      </div>
+
+      <div id="card-list" class="card-list"></div>
+
+    </div>
+
+    <!-- ═══ EDIT TAB ═══ -->
+    <div id="tab-edit" class="tab-content">
+      <div class="edit-tab-inner">
+        <div class="edit-tab-title">// edit kitchen</div>
+        <div class="edit-tab-sub">add new stock or log what you've used</div>
+
+        <!-- mode toggle -->
+        <div class="mode-toggle-wrap">
+          <div id="mode-add" class="mode-btn active-add" onclick="App.setEditMode('add')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            add stock
+          </div>
+          <div id="mode-remove" class="mode-btn" onclick="App.setEditMode('remove')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            use / remove
+          </div>
+        </div>
+
+        <!-- ── ADD MODE ── -->
+        <div id="add-mode" class="add-mode visible">
+          <form id="add-form">
+            <div class="ingredient-search-wrap">
+              <svg class="ingredient-input-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input id="add-search-input" class="ingredient-input" type="text"
+                placeholder="search ingredients catalogue..." autocomplete="off">
+              <input type="hidden" id="add-ingredient-id">
+            </div>
+
+            <div id="add-search-results" class="search-results" style="display:none"></div>
+
+            <div id="selected-ingredient-pill" class="selected-ingredient" style="display:none">
+              <span id="add-ingredient-display"></span>
+              <span class="clear-selected" onclick="clearSelectedIngredient()">&#x2715;</span>
+            </div>
+
+            <div id="add-form-fields" style="display:none">
+              <div class="form-row">
+                <div class="form-field">
+                  <label class="form-label">quantity</label>
+                  <input id="add-quantity" class="form-input" type="number" step="0.1" min="0.1" placeholder="1.0"
+                    required>
+                </div>
+                <div class="form-field">
+                  <label class="form-label">unit</label>
+                  <input id="add-unit" class="form-input" type="text" placeholder="kg, L, pcs...">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label class="form-label">purchased on</label>
+                  <input id="add-purchased" class="form-input" type="date">
+                </div>
+                <div class="form-field">
+                  <label class="form-label">expires on</label>
+                  <input id="add-expires" class="form-input" type="date">
+                </div>
+              </div>
+              <div class="toggle-row">
+                <span class="toggle-label">already opened?</span>
+                <div id="add-opened-toggle" class="toggle"></div>
+              </div>
+              <button type="submit" class="add-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                add to kitchen
+              </button>
+            </div>
+          </form>
+
+          <div class="divider-text">or</div>
+
+          <button id="show-new-ingredient-btn" class="new-ingredient-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <line x1="12" y1="8" x2="12" y2="16" />
+              <line x1="8" y1="12" x2="16" y2="12" />
+            </svg>
+            define new ingredient
+          </button>
+
+          <form id="new-ingredient-form" class="new-ingredient-panel" style="display:none">
+            <div class="new-ingredient-panel-title">// new ingredient</div>
+            <div class="form-row">
+              <div class="form-field" style="flex:2">
+                <label class="form-label">name *</label>
+                <input id="new-ing-name" class="form-input" type="text" placeholder="chicken breast" required>
+              </div>
+              <div class="form-field">
+                <label class="form-label">default unit</label>
+                <input id="new-ing-unit" class="form-input" type="text" placeholder="kg">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">category</label>
+                <input id="new-ing-category" class="form-input" type="text" placeholder="meat">
+              </div>
+              <div class="form-field">
+                <label class="form-label">shelf life (days)</label>
+                <input id="new-ing-shelf" class="form-input" type="number" min="1" placeholder="5">
+              </div>
+            </div>
+            <div class="form-field" style="margin-bottom:0">
+              <label class="form-label">storage</label>
+              <input id="new-ing-storage" class="form-input" type="text" placeholder="fridge, freezer, pantry...">
+            </div>
+            <div class="panel-actions">
+              <button type="button" class="btn-secondary" id="cancel-new-ingredient">cancel</button>
+              <button type="submit" class="btn-primary">create + add to kitchen</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ── REMOVE MODE ── -->
+        <div id="remove-mode" class="remove-mode">
+          <div class="remove-search-wrap">
+            <svg class="remove-input-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input id="remove-search-input" class="remove-input" type="text" placeholder="search what you used...">
+          </div>
+          <div id="remove-card-list" class="remove-card-list"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══ STATS TAB ═══ -->
+    <div id="tab-stats" class="tab-content">
+      <div class="stats-inner">
+        <div class="stats-title">// stats</div>
+        <div class="stats-sub">kitchen at a glance</div>
+
+        <div class="stat-cards-row">
+          <div class="stat-card">
+            <div id="stat-total" class="stat-card-value accent">—</div>
+            <div class="stat-card-label">total items</div>
+          </div>
+          <div class="stat-card">
+            <div id="stat-expired" class="stat-card-value red">—</div>
+            <div class="stat-card-label">expired</div>
+          </div>
+          <div class="stat-card" style="animation-delay:0.05s">
+            <div id="stat-expiring" class="stat-card-value yellow">—</div>
+            <div class="stat-card-label">expiring soon</div>
+          </div>
+          <div class="stat-card" style="animation-delay:0.1s">
+            <div id="stat-catalogue" class="stat-card-value">—</div>
+            <div class="stat-card-label">catalogue size</div>
+          </div>
+        </div>
+
+        <div class="bar-section">
+          <div class="bar-section-title">by category</div>
+          <div id="stat-categories"></div>
+        </div>
+
+        <div class="bar-section">
+          <div class="bar-section-title">expiry watch</div>
+          <div id="stat-expiry-breakdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CATALOGUE TAB ═══ -->
+    <div id="tab-catalogue" class="tab-content">
+      <div class="stats-inner">
+        <div class="stats-title">// catalogue</div>
+        <div class="stats-sub">all defined ingredients</div>
+
+        <div class="search-wrap" style="margin-top:14px">
+          <div class="search-wrap-inner">
+            <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input id="catalogue-search" class="search-bar" type="text" placeholder="search catalogue...">
+          </div>
+        </div>
+
+        <div id="catalogue-list" class="catalogue-list"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Bottom nav ── -->
+  <nav class="bottom-nav">
+    <div id="nav-kitchen" class="nav-btn active" onclick="App.switchTab('kitchen')">
+      <div style="position:relative">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9,22 9,12 15,12 15,22" />
+        </svg>
+        <div id="nav-dot" class="nav-dot" style="display:none"></div>
+      </div>
+      <span class="nav-label">kitchen</span>
+    </div>
+
+    <div id="nav-edit" class="nav-btn" onclick="App.switchTab('edit')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+      </svg>
+      <span class="nav-label">edit</span>
+    </div>
+
+    <div id="nav-catalogue" class="nav-btn" onclick="App.switchTab('catalogue')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+      <span class="nav-label">catalogue</span>
+    </div>
+
+    <div id="nav-stats" class="nav-btn" onclick="App.switchTab('stats')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <line x1="18" y1="20" x2="18" y2="10" />
+        <line x1="12" y1="20" x2="12" y2="4" />
+        <line x1="6" y1="20" x2="6" y2="14" />
+      </svg>
+      <span class="nav-label">stats</span>
+    </div>
+  </nav>
+
+  <script>
+    const saved = localStorage.getItem('kdb_api_url');
+    if (saved) window.KDB_API_URL = saved;
+
+    function saveApiUrl() {
+      const val = document.getElementById('api-url-input').value.trim();
+      if (val) {
+        localStorage.setItem('kdb_api_url', val);
+        window.KDB_API_URL = val;
+        location.reload();
+      }
+    }
+
+    function clearSelectedIngredient() {
+      document.getElementById('add-ingredient-id').value = '';
+      document.getElementById('add-ingredient-display').textContent = '';
+      document.getElementById('selected-ingredient-pill').style.display = 'none';
+      document.getElementById('add-form-fields').style.display = 'none';
+      document.getElementById('add-search-input').value = '';
+      document.getElementById('add-search-input').focus();
+    }
+  </script>
+  <script type="module" src="js/app.js"></script>
+
+</body>
+
+</html>

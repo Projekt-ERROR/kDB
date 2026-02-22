@@ -1,7 +1,9 @@
 use axum::Router;
+use axum::http::Method;
 use sqlx::{PgPool, postgres::PgPoolOptions};
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
+use tower_http::cors::{Any, CorsLayer};
 
 mod models;
 mod routes;
@@ -12,10 +14,22 @@ pub struct AppState {
 }
 
 fn build_router(state: AppState) -> Router {
+    let cors = CorsLayer::new()
+        .allow_methods([
+            Method::GET,
+            Method::POST,
+            Method::PUT,
+            Method::DELETE,
+            Method::OPTIONS,
+        ])
+        .allow_headers(Any)
+        .allow_origin(Any);
+
     Router::new()
         .merge(routes::health::router())
         .merge(routes::ingredients::router())
         .merge(routes::kitchen::router())
+        .layer(cors)
         .with_state(state)
 }
 
