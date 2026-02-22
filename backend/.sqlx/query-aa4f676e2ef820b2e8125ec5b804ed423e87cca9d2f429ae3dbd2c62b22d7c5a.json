@@ -1,0 +1,62 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM kitchen ORDER BY created_at ASC",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "ingredient_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "quantity",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 3,
+        "name": "unit",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "purchased_on",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 5,
+        "name": "expires_on",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 6,
+        "name": "opened",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "aa4f676e2ef820b2e8125ec5b804ed423e87cca9d2f429ae3dbd2c62b22d7c5a"
+}

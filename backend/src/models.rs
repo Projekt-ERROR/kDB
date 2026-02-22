@@ -53,3 +53,12 @@ pub struct CreateKitchenEntry {
     pub expires_on: Option<NaiveDate>,
     pub opened: Option<bool>,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct UpdateKitchenEntry {
+    pub quantity: Option<f64>,
+    pub unit: Option<String>,
+    pub purchased_on: Option<NaiveDate>,
+    pub expires_on: Option<NaiveDate>,
+    pub opened: Option<bool>,
+}

@@ -15,6 +15,7 @@ fn build_router(state: AppState) -> Router {
     Router::new()
         .merge(routes::health::router())
         .merge(routes::ingredients::router())
+        .merge(routes::kitchen::router())
         .with_state(state)
 }
 
@@ -27,6 +28,14 @@ async fn main() {
         .connect(&db_url)
         .await
         .expect("[X] - failed to connect to postgres");
+
+    // start up ping
+    sqlx::query("SELECT 1")
+        .execute(&pool)
+        .await
+        .expect("[X] - database unreachable");
+
+    println!("[*] - connected to database");
 
     let state = AppState { db: pool };
 

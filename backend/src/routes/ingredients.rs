@@ -3,7 +3,7 @@ use axum::{
     extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
-    routing::{delete, get, post},
+    routing::get,
 };
 
 use uuid::Uuid;
@@ -11,7 +11,6 @@ use uuid::Uuid;
 use crate::{
     AppState,
     models::{CreateIngredient, Ingredient, UpdateIngredient},
-    routes::ingredients,
 };
 
 // router
