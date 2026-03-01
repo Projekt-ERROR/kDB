@@ -1,0 +1,102 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO recipes (name, description, servings, prep_time_mins, cook_time_mins, difficulty, cuisine, meal_type, source)\n        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)\n        RETURNING *",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "servings",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "prep_time_mins",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "cook_time_mins",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 6,
+        "name": "total_time_mins",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 7,
+        "name": "difficulty",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "cuisine",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "meal_type",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 10,
+        "name": "source",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 11,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 12,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Int4",
+        "Int4",
+        "Int4",
+        "Text",
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "43e6927426c6fa1e751ce35131ededca2183a22a3963a041ad04048d92613a6f"
+}

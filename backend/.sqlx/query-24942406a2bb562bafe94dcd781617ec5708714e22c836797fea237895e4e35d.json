@@ -1,0 +1,63 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE meal_plan\n        SET\n            plan_date = COALESCE($1, plan_date),\n            meal_slot = COALESCE($2, meal_slot),\n            recipe_id = COALESCE($3, recipe_id),\n            custom_meal = COALESCE($4, custom_meal),\n            notes = COALESCE($5, notes)\n        WHERE id = $6\n        RETURNING *",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "plan_date",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 2,
+        "name": "meal_slot",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "recipe_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 4,
+        "name": "custom_meal",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "notes",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Date",
+        "Text",
+        "Uuid",
+        "Text",
+        "Text",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "24942406a2bb562bafe94dcd781617ec5708714e22c836797fea237895e4e35d"
+}

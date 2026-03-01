@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM recipe_ingredients WHERE recipe_id = $1 AND NOT (sort_order = ANY($2))",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Int4Array"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "8c2ca780ab43c338aace4586456415fc55d0a3dc82a6526f27fcc624bf2537c1"
+}

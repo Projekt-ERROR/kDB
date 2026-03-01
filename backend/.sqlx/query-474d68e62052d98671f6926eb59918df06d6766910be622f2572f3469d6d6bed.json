@@ -1,0 +1,92 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM recipes ORDER BY name ASC",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "servings",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "prep_time_mins",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "cook_time_mins",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 6,
+        "name": "total_time_mins",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 7,
+        "name": "difficulty",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "cuisine",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "meal_type",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 10,
+        "name": "source",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 11,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 12,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "474d68e62052d98671f6926eb59918df06d6766910be622f2572f3469d6d6bed"
+}

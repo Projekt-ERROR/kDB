@@ -29,6 +29,8 @@ fn build_router(state: AppState) -> Router {
         .merge(routes::health::router())
         .merge(routes::ingredients::router())
         .merge(routes::kitchen::router())
+        .merge(routes::recipes::router())
+        .merge(routes::meal_plan::router())
         .layer(cors)
         .with_state(state)
 }

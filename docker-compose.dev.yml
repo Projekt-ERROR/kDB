@@ -1,0 +1,41 @@
+# docker-compose.dev.yml
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kdb_postgres_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kdb
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: kdb
+    ports:
+      - "5432:5432"       # exposed so sqlx-cli can reach it from your Mac
+    volumes:
+      - kdb_dev_data:/var/lib/postgresql/data
+
+  kdb-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: kdb_backend_dev
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://kdb:devpassword@postgres:5432/kdb
+      ENVIRONMENT: development
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_started
+
+  kdb-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: kdb_frontend_dev
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+
+volumes:
+  kdb_dev_data:

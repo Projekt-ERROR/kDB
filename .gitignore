@@ -9,6 +9,7 @@ backend/target/
 
 # Docker
 *.log
+.docker-compose.dev.yml
 
 # IDE
 .vscode/

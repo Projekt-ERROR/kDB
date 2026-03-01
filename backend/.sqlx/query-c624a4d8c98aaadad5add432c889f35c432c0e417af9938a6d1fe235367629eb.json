@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM recipe_steps WHERE recipe_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "recipe_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "step_number",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "instruction",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "timer_mins",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "c624a4d8c98aaadad5add432c889f35c432c0e417af9938a6d1fe235367629eb"
+}

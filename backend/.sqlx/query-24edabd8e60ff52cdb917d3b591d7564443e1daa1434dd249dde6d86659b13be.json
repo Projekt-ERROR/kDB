@@ -1,0 +1,21 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, custom_name, quantity, unit, preparation, optional, sort_order)\n             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)\n             ON CONFLICT (recipe_id, sort_order)\n             DO UPDATE SET\n                ingredient_id = EXCLUDED.ingredient_id,\n                custom_name = EXCLUDED.custom_name,\n                quantity = EXCLUDED.quantity,\n                unit = EXCLUDED.unit,\n                preparation = EXCLUDED.preparation,\n                optional = EXCLUDED.optional",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Text",
+        "Numeric",
+        "Text",
+        "Text",
+        "Bool",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "24edabd8e60ff52cdb917d3b591d7564443e1daa1434dd249dde6d86659b13be"
+}

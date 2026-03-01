@@ -29,12 +29,12 @@ async function request(method, path, body = null) {
   return data;
 }
 
-// ── Health ──────────────────────────────────
+// ------------ HEALTH ------------
 export const health = {
   check: () => request('GET', '/health'),
 };
 
-// ── Ingredients (catalogue) ─────────────────
+// ------------ INGREDIENTS ------------
 export const ingredients = {
   list:   ()       => request('GET',    '/api/ingredients'),
   get:    (id)     => request('GET',    `/api/ingredients/${id}`),
@@ -43,7 +43,7 @@ export const ingredients = {
   delete: (id)     => request('DELETE', `/api/ingredients/${id}`),
 };
 
-// ── Kitchen (inventory) ─────────────────────
+// ------------ KITCHEN ------------
 export const kitchen = {
   list:   ()       => request('GET',    '/api/kitchen'),
   get:    (id)     => request('GET',    `/api/kitchen/${id}`),
@@ -51,3 +51,24 @@ export const kitchen = {
   update: (id, body) => request('PUT',  `/api/kitchen/${id}`, body),
   delete: (id)     => request('DELETE', `/api/kitchen/${id}`),
 };
+
+// ------------ RECIPE ------------
+export const reciipe = {
+  list:   ()       => request('GET',     '/api/recipes'),
+  get:    (id)     => request('GET',     `/api/recipes/${id}`),
+  create: (body)   => request('POST',    '/api/recipes', body),
+  update: (id, body) => request('PUT',   `/api/recipes/${id}`, body),
+  delete: (id)     => request('DELETE',  `/api/recipes/${id}`),
+  update_ingredients: (id, body) => request('PUT', `/api/recipes/${id}/ingredients`, body),
+  update_steps: (id, body) => request('PUT', `/api/recipes/${id}/steps`, body),
+  update_tags: (id, body) => request('PUT', `/api/recipes/${id}/tags`, body),
+}
+
+// ------------ MEALPLAN ------------
+export const mealplan = {
+  list:   ()       => request('GET',    '/api/meal-plan'),
+  get:    (id)     => request('GET',    `/api/meal-plan/${id}`),
+  create: (body)   => request('POST',   '/api/meal-plan', body),
+  update: (id, body) => request('PUT',  `/api/meal-plan/${id}`, body),
+  delete: (id)     => request('DELETE', `/api/meal-plan/${id}`),
+}
